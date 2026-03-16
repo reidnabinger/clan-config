@@ -10,8 +10,7 @@
 #     on persisted state will fail during activation
 #   - Add new persist paths here as services are added
 # ----------------------------------------------------------------------------
-_:
-{
+_: {
   fileSystems."/persist".neededForBoot = true;
 
   fileSystems."/tmp" = {
