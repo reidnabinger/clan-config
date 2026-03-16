@@ -32,6 +32,7 @@
     ../../modules/laptop-power.nix
     ../../modules/desktop-wayland.nix
     ../../modules/user-reid.nix
+    ../../modules/dotfiles.nix
   ];
 
   # ---------------------------------------------------------------------------
@@ -49,6 +50,18 @@
     laptop-power.enable = true;
     desktop-wayland.enable = true;
     user-reid.enable = true;
+    dotfiles.enable = true;
+    dotfiles.users.reid = [ "nvim" ];
+  };
+
+  # ---------------------------------------------------------------------------
+  # Neovim
+  # ---------------------------------------------------------------------------
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
   };
 
   # ---------------------------------------------------------------------------
