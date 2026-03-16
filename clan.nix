@@ -20,7 +20,6 @@
     sixseven = {
       tags = [ "personal" "nixos" "laptop" ];
       description = "System76 Bonobo WS — i9-14900HX, RTX 4090 Laptop, 64GB";
-      system = "x86_64-linux";
     };
   };
 
