@@ -10,7 +10,7 @@
 #     on persisted state will fail during activation
 #   - Add new persist paths here as services are added
 # ----------------------------------------------------------------------------
-{ lib, pkgs, ... }:
+{ ... }:
 {
   fileSystems."/persist".neededForBoot = true;
 

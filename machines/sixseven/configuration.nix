@@ -17,8 +17,6 @@
 #   - networking.hostId is required for ZFS — derived from machine-id
 # ----------------------------------------------------------------------------
 {
-  config,
-  lib,
   pkgs,
   inputs,
   ...
@@ -46,23 +44,25 @@
   # ---------------------------------------------------------------------------
   # Enable feature modules
   # ---------------------------------------------------------------------------
-  my.nvidia-laptop.enable = true;
-  my.laptop-power.enable = true;
-  my.desktop-wayland.enable = true;
-  my.user-reid.enable = true;
+  my = {
+    nvidia-laptop.enable = true;
+    laptop-power.enable = true;
+    desktop-wayland.enable = true;
+    user-reid.enable = true;
+  };
 
   # ---------------------------------------------------------------------------
   # Boot
   # ---------------------------------------------------------------------------
-  boot.kernelPackages = pkgs.linuxPackages;
-  boot.zfs.devNodes = "/dev/disk/by-id";
-
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+  boot = {
+    kernelPackages = pkgs.linuxPackages;
+    zfs.devNodes = "/dev/disk/by-id";
+    supportedFilesystems = [ "zfs" ];
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
   };
-
-  boot.supportedFilesystems = [ "zfs" ];
 
   # ---------------------------------------------------------------------------
   # ZFS services
