@@ -10,7 +10,7 @@
 #     on persisted state will fail during activation
 #   - Add new persist paths here as services are added
 # ----------------------------------------------------------------------------
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   fileSystems."/persist".neededForBoot = true;
 
@@ -20,14 +20,28 @@
     options = [ "mode=1777" "nosuid" "nodev" ];
   };
 
-  boot.initrd.postDeviceCommands = lib.mkAfter ''
-    if zfs list -H -o name rpool/ROOT/nixos@blank >/dev/null 2>&1; then
-      echo "initrd: rolling back rpool/ROOT/nixos to @blank"
-      zfs rollback -r rpool/ROOT/nixos@blank
-    else
-      echo "initrd: missing rpool/ROOT/nixos@blank; skipping rollback" >&2
-    fi
-  '';
+  # DEV-NOTE: Clan uses systemd stage 1, so we use a systemd service
+  # in initrd instead of postDeviceCommands.
+  boot.initrd.systemd.services.zfs-rollback-root = {
+    description = "Rollback rpool/ROOT/nixos to blank snapshot";
+    wantedBy = [ "initrd.target" ];
+    after = [ "zfs-import-rpool.service" ];
+    before = [ "sysroot.mount" ];
+    unitConfig.DefaultDependencies = "no";
+    serviceConfig = {
+      Type = "oneshot";
+    };
+    # DEV-NOTE: In initrd, zfs is available on PATH from boot.zfs support.
+    # Using a script avoids needing to resolve store paths in initrd.
+    script = ''
+      if zfs list -H -o name rpool/ROOT/nixos@blank >/dev/null 2>&1; then
+        echo "initrd: rolling back rpool/ROOT/nixos to @blank"
+        zfs rollback -r rpool/ROOT/nixos@blank
+      else
+        echo "initrd: missing rpool/ROOT/nixos@blank; skipping rollback" >&2
+      fi
+    '';
+  };
 
   # DEV-NOTE: Extend these lists as services are added.
   # Anything not listed here is wiped on reboot.
