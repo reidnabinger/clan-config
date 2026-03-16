@@ -7,8 +7,8 @@
 #   CPU: Intel i9-14900HX (32 threads)
 #   GPU: NVIDIA RTX 4090 Laptop (AD103M)
 #   RAM: 64GB DDR5
-#   Storage: Samsung 990 PRO 4TB + MKNSSD 2TB + WD BLACK SN770 2TB
-#            → ZFS RAID-10 (~4TB usable)
+#   Storage: Samsung 990 PRO 4TB + MKNSSD 2TB (internal)
+#            → rpool (single, ~1.8TB) for system + hpool (mirror, ~1.8TB) for data
 #
 # DEV-NOTES:
 #   - This file is auto-imported by Clan from machines/sixseven/
