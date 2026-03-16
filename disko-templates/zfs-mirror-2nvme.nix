@@ -24,7 +24,8 @@
 {
   largeDisk,
   smallDisk,
-}: {
+}:
+{
   disko.devices = {
     disk = {
       large = {
@@ -39,7 +40,10 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                extraArgs = [ "-n" "ESP" ];
+                extraArgs = [
+                  "-n"
+                  "ESP"
+                ];
                 mountpoint = "/boot";
                 mountOptions = [ "umask=0077" ];
               };
@@ -76,7 +80,10 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                extraArgs = [ "-n" "ESP2" ];
+                extraArgs = [
+                  "-n"
+                  "ESP2"
+                ];
                 mountpoint = "/boot2";
                 mountOptions = [ "umask=0077" ];
               };

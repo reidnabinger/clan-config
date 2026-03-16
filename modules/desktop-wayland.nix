@@ -8,7 +8,12 @@
 #   - Does not prescribe a compositor — machine config can add Niri, Sway, etc.
 #   - XDG portal for screen sharing, file dialogs
 # ----------------------------------------------------------------------------
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.my.desktop-wayland;
 in
@@ -41,11 +46,11 @@ in
 
     environment.systemPackages = with pkgs; [
       wl-clipboard
-      foot          # terminal
-      wofi          # launcher
-      mako          # notifications
-      grim          # screenshot
-      slurp         # region select
+      foot # terminal
+      wofi # launcher
+      mako # notifications
+      grim # screenshot
+      slurp # region select
     ];
   };
 }

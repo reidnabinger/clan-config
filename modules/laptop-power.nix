@@ -8,7 +8,12 @@
 #   - thermald for Intel thermal management
 #   - fwupd for firmware updates (System76 BIOS/EC)
 # ----------------------------------------------------------------------------
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.my.laptop-power;
 in
@@ -16,16 +21,17 @@ in
   options.my.laptop-power.enable = lib.mkEnableOption "Laptop power management";
 
   config = lib.mkIf cfg.enable {
-    services.power-profiles-daemon.enable = true;
-    services.thermald.enable = true;
-    services.fwupd.enable = true;
+    services = {
+      power-profiles-daemon.enable = true;
+      thermald.enable = true;
+      fwupd.enable = true;
+      logind.settings.Login = {
+        HandleLidSwitch = "suspend";
+        HandleLidSwitchExternalPower = "lock";
+      };
+    };
 
     powerManagement.cpuFreqGovernor = "schedutil";
-
-    services.logind.settings.Login = {
-      HandleLidSwitch = "suspend";
-      HandleLidSwitchExternalPower = "lock";
-    };
 
     environment.systemPackages = with pkgs; [
       powertop

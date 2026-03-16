@@ -11,10 +11,11 @@
 #   - Uses standard Nix (not Lix) per Clan convention
 # ----------------------------------------------------------------------------
 {
-  inputs.clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
-  inputs.nixpkgs.follows = "clan-core/nixpkgs";
-
-  inputs.impermanence.url = "github:nix-community/impermanence";
+  inputs = {
+    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
+    nixpkgs.follows = "clan-core/nixpkgs";
+    impermanence.url = "github:nix-community/impermanence";
+  };
 
   outputs =
     {

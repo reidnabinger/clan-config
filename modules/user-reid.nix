@@ -8,7 +8,12 @@
 #   - SSH keys are set fleet-wide via clan sshd service
 #   - initialPassword for first login; change immediately
 # ----------------------------------------------------------------------------
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.my.user-reid;
 in

@@ -10,14 +10,17 @@
 #     on persisted state will fail during activation
 #   - Add new persist paths here as services are added
 # ----------------------------------------------------------------------------
-{ lib, pkgs, ... }:
-{
+_: {
   fileSystems."/persist".neededForBoot = true;
 
   fileSystems."/tmp" = {
     device = "tmpfs";
     fsType = "tmpfs";
-    options = [ "mode=1777" "nosuid" "nodev" ];
+    options = [
+      "mode=1777"
+      "nosuid"
+      "nodev"
+    ];
   };
 
   # DEV-NOTE: Clan uses systemd stage 1, so we use a systemd service
@@ -58,10 +61,22 @@
 
     files = [
       "/etc/machine-id"
-      { file = "/etc/ssh/ssh_host_ed25519_key"; parentDirectory.mode = "0700"; }
-      { file = "/etc/ssh/ssh_host_ed25519_key.pub"; parentDirectory.mode = "0700"; }
-      { file = "/etc/ssh/ssh_host_rsa_key"; parentDirectory.mode = "0700"; }
-      { file = "/etc/ssh/ssh_host_rsa_key.pub"; parentDirectory.mode = "0700"; }
+      {
+        file = "/etc/ssh/ssh_host_ed25519_key";
+        parentDirectory.mode = "0700";
+      }
+      {
+        file = "/etc/ssh/ssh_host_ed25519_key.pub";
+        parentDirectory.mode = "0700";
+      }
+      {
+        file = "/etc/ssh/ssh_host_rsa_key";
+        parentDirectory.mode = "0700";
+      }
+      {
+        file = "/etc/ssh/ssh_host_rsa_key.pub";
+        parentDirectory.mode = "0700";
+      }
     ];
   };
 }

@@ -1,0 +1,35 @@
+name: Check
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: nix flake check
+        run: nix flake check
+
+      - name: nixfmt
+        run: |
+          nix run nixpkgs#nixfmt-rfc-style -- --check \
+            $(find . -name "*.nix" -not -path "./.direnv/*" -not -path "./result/*")
+
+      - name: statix
+        run: nix run nixpkgs#statix -- check .
+
+      - name: deadnix
+        run: nix run nixpkgs#deadnix -- --fail .
+
+      - name: Build all machines
+        run: |
+          machines=$(nix eval .#nixosConfigurations --apply 'x: builtins.attrNames x' --json)
+          for drv in $(echo "$machines" | nix run nixpkgs#jq -- -r '.[]'); do
+            echo "::group::Building $drv"
+            nix build ".#nixosConfigurations.${drv}.config.system.build.toplevel" --dry-run
+            echo "::endgroup::"
+          done

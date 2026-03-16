@@ -9,7 +9,12 @@
 #   - 32-bit GL libraries for Steam/Wine compatibility
 #   - For VFIO passthrough on desktops, use a separate module
 # ----------------------------------------------------------------------------
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.my.nvidia-laptop;
 in
