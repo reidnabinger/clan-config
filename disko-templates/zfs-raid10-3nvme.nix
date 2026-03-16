@@ -57,8 +57,11 @@
               };
             };
             # First half — mirrors with smallDiskA
+            # DEV-NOTE: disko only accepts "100%" or absolute sizes.
+            # 1845G ≈ half of (3.6TB - 2G ESP). Adjust if large disk
+            # size differs.
             zfsA = {
-              size = "50%";
+              size = "1845G";
               content = {
                 type = "zfs";
                 pool = "rpool";
