@@ -17,7 +17,7 @@
         "narHash": "sha256-bPdjkif53JS2adZChHtQ1ph+SJjsqz4tU5v1ufP3S5w=",
         "rev": "36327c53c90730ddbf612c3cba5d10eae265e3a7",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/36327c53c90730ddbf612c3cba5d10eae265e3a7.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/36327c53c90730ddbf612c3cba5d10eae265e3a7.tar.gz?rev=36327c53c90730ddbf612c3cba5d10eae265e3a7"
       },
       "original": {
         "type": "tarball",
