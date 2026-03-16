@@ -14,6 +14,8 @@
   inputs.clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
   inputs.nixpkgs.follows = "clan-core/nixpkgs";
 
+  inputs.impermanence.url = "github:nix-community/impermanence";
+
   outputs =
     {
       self,
@@ -21,6 +23,8 @@
       nixpkgs,
       ...
     }@inputs:
+    # DEV-NOTE: impermanence must be passed through to machine configs
+    # via specialArgs since Clan doesn't include it by default
     let
       clan = clan-core.lib.clan {
         inherit self;

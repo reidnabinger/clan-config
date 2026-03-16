@@ -16,9 +16,10 @@
 #   - Impermanence rolls back / on every boot; persist to /persist
 #   - networking.hostId is required for ZFS — derived from machine-id
 # ----------------------------------------------------------------------------
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 {
   imports = [
+    inputs.impermanence.nixosModules.impermanence
     ./hardware.nix
     ./disko.nix
     ./impermanence.nix
