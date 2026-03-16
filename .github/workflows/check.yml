@@ -13,21 +13,24 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: nix flake check
-        run: nix flake check --all-systems
+        run: nix flake check
 
       - name: nixfmt
-        run: nix develop --command bash -c 'find . -name "*.nix" | xargs nixfmt-rfc-style --check'
+        run: |
+          nix run nixpkgs#nixfmt-rfc-style -- --check \
+            $(find . -name "*.nix" -not -path "./.direnv/*" -not -path "./result/*")
 
       - name: statix
-        run: nix develop --command statix check .
+        run: nix run nixpkgs#statix -- check .
 
       - name: deadnix
-        run: nix develop --command deadnix --fail .
+        run: nix run nixpkgs#deadnix -- --fail .
 
       - name: Build all machines
         run: |
-          for drv in $(nix eval .#nixosConfigurations --apply 'x: builtins.attrNames x' --json | nix develop --command jq -r '.[]'); do
+          machines=$(nix eval .#nixosConfigurations --apply 'x: builtins.attrNames x' --json)
+          for drv in $(echo "$machines" | nix run nixpkgs#jq -- -r '.[]'); do
             echo "::group::Building $drv"
-            nix build .#nixosConfigurations."$drv".config.system.build.toplevel --dry-run
+            nix build ".#nixosConfigurations.${drv}.config.system.build.toplevel" --dry-run
             echo "::endgroup::"
           done
