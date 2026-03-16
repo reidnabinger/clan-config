@@ -8,7 +8,12 @@
 #   - thermald for Intel thermal management
 #   - fwupd for firmware updates (System76 BIOS/EC)
 # ----------------------------------------------------------------------------
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.my.laptop-power;
 in

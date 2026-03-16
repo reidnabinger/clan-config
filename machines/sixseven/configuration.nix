@@ -16,7 +16,13 @@
 #   - Impermanence rolls back / on every boot; persist to /persist
 #   - networking.hostId is required for ZFS — derived from machine-id
 # ----------------------------------------------------------------------------
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
     inputs.impermanence.nixosModules.impermanence
@@ -65,7 +71,7 @@
     autoScrub.enable = true;
     autoSnapshot = {
       enable = true;
-      frequent = 4;    # every 15 min, keep 4
+      frequent = 4; # every 15 min, keep 4
       hourly = 24;
       daily = 7;
       weekly = 4;
