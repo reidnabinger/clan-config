@@ -36,14 +36,17 @@
       };
     };
 
-    user-root = {
-      module.name = "users";
-      roles.default.tags.nixos = { };
-      roles.default.settings = {
-        user = "root";
-        prompt = true;
-      };
-    };
+    # DEV-NOTE: user-root with prompt=true needs a real TTY for
+    # `clan vars generate`. Re-enable when deploying from terminal.
+    # For now, root login is SSH-key-only via sshd service above.
+    # user-root = {
+    #   module.name = "users";
+    #   roles.default.tags.nixos = { };
+    #   roles.default.settings = {
+    #     user = "root";
+    #     prompt = true;
+    #   };
+    # };
 
     # DEV-NOTE: zerotier/wireguard networking and borgbackup will be
     # added when the fleet grows beyond one machine.
