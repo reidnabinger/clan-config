@@ -1,3 +1,15 @@
+# ----------------------------------------------------------------------------
+# FLAKE ENTRY POINT: Clan Fleet Configuration
+#
+# PURPOSE: Root flake for all machines managed by this clan
+#
+# DEV-NOTES:
+#   - Clan wraps NixOS with fleet-level services (sshd, networking, backups)
+#   - Machine configs auto-included from machines/<name>/configuration.nix
+#   - Disk templates in disko-templates/, applied per-machine via clan CLI
+#   - No Home Manager — user config is plain NixOS modules
+#   - Uses standard Nix (not Lix) per Clan convention
+# ----------------------------------------------------------------------------
 {
   inputs.clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
   inputs.nixpkgs.follows = "clan-core/nixpkgs";
@@ -10,40 +22,50 @@
       ...
     }@inputs:
     let
-      # Usage see: https://docs.clan.lol
       clan = clan-core.lib.clan {
         inherit self;
         imports = [ ./clan.nix ];
         specialArgs = { inherit inputs; };
 
-        # Customize nixpkgs
-        # pkgsForSystem =
-        #   system:
-        #   import nixpkgs {
-        #     inherit system;
-        #     config = {
-        #       allowUnfree = true;
-        #     };
-        #     overlays = [];
-        #   };
+        # DEV-NOTE: allowUnfree needed for NVIDIA drivers, firmware, etc.
+        pkgsForSystem =
+          system:
+          import nixpkgs {
+            inherit system;
+            config = {
+              allowUnfree = true;
+            };
+          };
       };
     in
     {
       inherit (clan.config) nixosConfigurations nixosModules clanInternals;
       clan = clan.config;
-      # Add the Clan cli tool to the dev shell.
-      # Use "nix develop" to enter the dev shell.
+
       devShells =
         nixpkgs.lib.genAttrs
           [
             "x86_64-linux"
             "aarch64-linux"
-            "aarch64-darwin"
-            "x86_64-darwin"
           ]
           (system: {
-            default = clan-core.inputs.nixpkgs.legacyPackages.${system}.mkShell {
-              packages = [ clan-core.packages.${system}.clan-cli ];
+            default = nixpkgs.legacyPackages.${system}.mkShell {
+              packages = with nixpkgs.legacyPackages.${system}; [
+                clan-core.packages.${system}.clan-cli
+                nixfmt-rfc-style
+                statix
+                deadnix
+                jq
+              ];
+              shellHook = ''
+                echo "Clan Fleet Config — Dev Shell"
+                echo ""
+                echo "  clan machines list         — list machines"
+                echo "  clan machines deploy <m>   — deploy a machine"
+                echo "  clan vms run <m>           — test in VM"
+                echo "  clan secrets set <s>       — set a secret"
+                echo ""
+              '';
             };
           });
     };

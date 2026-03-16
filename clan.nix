@@ -1,71 +1,54 @@
+# ----------------------------------------------------------------------------
+# CLAN INVENTORY: Fleet-wide service and machine definitions
+#
+# PURPOSE: Central inventory defining machines, roles, and shared services
+#
+# DEV-NOTES:
+#   - machines/<name>/configuration.nix is auto-imported per machine
+#   - Tags group machines by role (e.g., "prod", "dev", "personal")
+#   - Services are applied across machines via roles + tags
+#   - Secrets managed via clan vars + sops
+# ----------------------------------------------------------------------------
 {
-  # Ensure this is unique among all clans you want to use.
   meta.name = "clan-config";
   meta.domain = "clan";
 
+  # ---------------------------------------------------------------------------
+  # MACHINES
+  # ---------------------------------------------------------------------------
   inventory.machines = {
-    # Define machines here.
-    # server = { };
+    sixseven = {
+      tags = [ "personal" "nixos" "laptop" ];
+      description = "System76 Bonobo WS — i9-14900HX, RTX 4090 Laptop, 64GB";
+      system = "x86_64-linux";
+    };
   };
 
-  # Docs: See https://docs.clan.lol/latest/services/definition/
+  # ---------------------------------------------------------------------------
+  # FLEET SERVICES
+  # ---------------------------------------------------------------------------
   inventory.instances = {
 
-    # Docs: https://docs.clan.lol/latest/services/official/sshd/
-    # SSH service for secure remote access to machines.
-    # Generates persistent host keys and configures authorized keys.
     sshd = {
-      roles.server.tags.all = { };
+      roles.server.tags.nixos = { };
       roles.server.settings.authorizedKeys = {
-        # Insert the public key that you want to use for SSH access.
-        # All keys will have ssh access to all machines ("tags.all" means 'all machines').
-        # Alternatively set 'users.users.root.openssh.authorizedKeys.keys' in each machine
-        "admin-machine-1" = "PASTE_YOUR_KEY_HERE";
+        "reid-ed25519" = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPjT4ine3LG46PULl+VaCIPQUwryT8veSePfyOoAqQ9g protect-daemon@koshee.ai";
+        "reid-rsa" = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDKIPNTdHSTDpDGI6jWoU6I7k1Tp3vyNHJRJZfBAmgo8Ug14XYbaR4MM4StTnIW5tseOjYShH46NXe23WhM26xIIXeimqWAQe3EikMTDZyiKMKGTqoyGfCA7RCSTu6Ete7ciQLbu7XEngZtYjs3YyxxK9t7QYhC9psfdDWXgrkP3ay4dQz1ITuPLiHT7IxyGUsdEGz5cyMY4P8iiG0yk4nHR9M5SfE5ywU51HvCLA8+DpeT31LB6W3laBJJn8z08xO3i60gKXlX4XLRukasESu7EvAAupzAfCpEwiHKSP14UOxMKzwGTqiuPeL4lLUDFPV9/7L7XyOnNJ9TtH6Sd5sfYYG2hFRXCav1jk1VAqawl83sc0ddAPMBmTEMMPllk0ls6ekF6chNxdeuMUhcTRmzY7tKsYRM3BNsFCJ6ZT1HY5xBQC6J1xn+gNv89G5LgSQqsrt/3Fw+m1PKqcu9gzre72RFxrARNshI12Jjc+NDhJT3tbUhesUf8D1oDrqdTbDZ932RpLL+1SVUVcs6JhwNjC6gfECfCiW1jGYBSgMdBKz59c8K9xJM5/zBEhaAhvSA7ZuCs5lS8HNQMmYr/QyhC2r8hdVzmWHDqA2QwGWNgnG4hiUvZVg+o6m3I6LVQ8IeX6RlV/2/KLEm8OCCV7SbixfGZSjG09TtFRl6yfDoPQ== reidn@m1.mbp";
       };
     };
 
-    # Docs: https://docs.clan.lol/latest/services/official/users/
-    # Root password management for all machines.
     user-root = {
-      module = {
-        name = "users";
-      };
-      roles.default.tags.all = { };
+      module.name = "users";
+      roles.default.tags.nixos = { };
       roles.default.settings = {
         user = "root";
         prompt = true;
       };
     };
 
-    # Docs: https://docs.clan.lol/latest/services/official/zerotier/
-    # The lines below will define a zerotier network and add all machines as 'peer' to it.
-    # !!! Manual steps required:
-    #   - Define a controller machine for the zerotier network.
-    #   - Deploy the controller machine first to initialize the network.
-    zerotier = {
-      # Replace with the name (string) of your machine that you will use as zerotier-controller
-      # See: https://docs.zerotier.com/controller/
-      # Deploy this machine first to create the network secrets
-      roles.controller.machines."YOUR_CONTROLLER" = { };
-      # Peers of the network
-      # tags.all means 'all machines' will joined
-      roles.peer.tags.all = { };
-    };
-
-    # Docs: https://docs.clan.lol/latest/services/official/tor/
-    # Tor network provides secure, anonymous connections to your machines
-    # All machines will be accessible via Tor as a fallback connection method
-    tor = {
-      roles.server.tags.nixos = { };
-    };
+    # DEV-NOTE: zerotier/wireguard networking and borgbackup will be
+    # added when the fleet grows beyond one machine.
   };
 
-  # Additional NixOS configuration can be added here.
-  # machines/server/configuration.nix will be automatically imported.
-  # See: https://docs.clan.lol/latest/guides/inventory/autoincludes/
-  machines = {
-    # server = { config, ... }: {
-    #   environment.systemPackages = [ pkgs.asciinema ];
-    # };
-  };
+  machines = { };
 }
